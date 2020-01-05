@@ -94,14 +94,14 @@ analytics:
 # Site Author
 author:
   name             : "Kim Jungwoo"
-  avatar           :  path of avatar image, e.g. "/assets/images/KakaoTalk_20190909_151104737.jpg"
+  avatar           :  path of avatar image, e.g. "/assets/images/KakaoTalk_20190423_211737855.jpg"
   bio              : "KAIST 14 SoC"
   location         : "Seoul, Korea"
   email            :
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      # url: "mailto:your.name@email.com"
+       url: mailto:jw950310@gmail.com
     - label: "Website"
       icon: "fas fa-fw fa-link"
       # url: "https://your-website.com"

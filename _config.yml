@@ -94,7 +94,7 @@ analytics:
 # Site Author
 author:
   name             : "Kim Jungwoo"
-  avatar           :  path of avatar image, e.g. "/assets/images/KakaoTalk_20190423_211737855.jpg"
+  avatar           : "/assets/images/KakaoTalk_20190423_211737855.jpg"
   bio              : "KAIST 14 SoC"
   location         : "Seoul, Korea"
   email            :

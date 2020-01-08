@@ -248,9 +248,7 @@ count(2,1)을 구할 때는, (3,1)로 가는 경우만 최대 경로이고, coun
   
 (A)에 해당하는 한 경우에는 `cache[x+1][y]`와 `cache[x+1][y+1]`을 비교해도 되는 것만 보였다.  
 실제로,
-`cache[x][y]`  
-` = max ( cache[x+1][y] + block[x][y], cache[x+1][y+1] + block[x][y]`  
-` = block[x][y] + max (cache[x+1][y], cache[x+1][y+1])`  
+`cache[x][y] = max(cache[x+1][y]+block[x][y],cache[x+1][y+1]+block[x][y] = block[x][y]+max(cache[x+1][y],cache[x+1][y+1])`  
 이므로 `cache[x][y]`는 `max(cache[x+1][y], cache[x+1][y+1])`에 의해 결정된다. → (B)  
 그래서 책처럼 `cache[x+1][y]`와 `cache[x+1][y+1]`만 비교해도 된다.  
 쉽게 (B)를 보일 수 있는데 (A)처럼 잘못 생각한 것이 아쉽다.  

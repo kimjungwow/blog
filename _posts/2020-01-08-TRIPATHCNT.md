@@ -27,7 +27,7 @@ count()의 계산 값은 result[101][101]에 메모이제이션하며 count(1,1)
 ## 나의 코드
 
 <details>
-<summary>LIS - 내 코드</summary>
+<summary>TRIPATHCNT - 내 코드</summary>
 <div markdown="1">
 
 ```
@@ -129,7 +129,7 @@ count(x,y)의 값을 구할 때, `cache[x+1][y]`와 `cache[x+1][y+1]`의 크기�
 ## 책의 코드
 
 <details>
-<summary>LIS - 책의 코드</summary>
+<summary>TRIPATHCNT - 책의 코드</summary>
 <div markdown="1">
 
   

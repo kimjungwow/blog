@@ -97,7 +97,7 @@ author:
   avatar           : "/assets/images/bio-photo-1.jpg"
   bio              : "KAIST 14 SoC"
   location         : "Seoul, Korea"
-  email            : jw950310@gmail.com
+  email            : "jw950310@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"

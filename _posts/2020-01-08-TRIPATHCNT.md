@@ -1,8 +1,8 @@
 ---
-title: "TRIPATHCNT (삼각형 위의 최대 경로 개수 세기)"
+title: "Algospot :: TRIPATHCNT (삼각형 위의 최대 경로 개수 세기)"
 date: 2020-01-08 20:24:00 -0400
-categories: 알고리즘
-tags: AOJ
+categories: 알고리즘_문제풀이 
+tags: Algospot
 ---
 
 # 삼각형 위의 최대 경로 개수 세기 ( [TRIPATHCNT](https://algospot.com/judge/problem/read/TRIPATHCNT) , 중)

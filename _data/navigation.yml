@@ -8,10 +8,10 @@ main:
     url: /categories/
   - title: "Tags"
     url: /tags/
-  - title: "Pages"
-    url: /page-archive/
-  - title: "Collections"
-    url: /collection-archive/
+  #- title: "Pages"
+  #  url: /page-archive/
+  #- title: "Collections"
+  #  url: /collection-archive/
   # - title: "About"
   #   url: https://mmistakes.github.io/minimal-mistakes/about/
   # - title: "Sample Posts"

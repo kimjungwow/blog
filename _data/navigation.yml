@@ -1,9 +1,10 @@
 # main links
+# sources : https://github.com/mmistakes/minimal-mistakes/tree/master/docs/_pages
 main:
   #- title: "Quick-Start Guide"
   #  url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
-  - title: "Posts"
-    url: /post-archive-feature-rows/
+  # - title: "Posts"
+  #   url: /post-archive-feature-rows/
   - title: "Categories"
     url: /categories/
   - title: "Tags"

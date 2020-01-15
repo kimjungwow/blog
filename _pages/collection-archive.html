@@ -1,0 +1,56 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@kimjungwow 
+mmistakes
+/
+minimal-mistakes
+6.7k
+120
+6k10.1k
+ Code Issues 9 Pull requests 2 Actions Projects 0 Security Insights
+minimal-mistakes/docs/_pages/collection-archive.html
+@mmistakes mmistakes Replace `{{ base_path }` with `absolute_url` filter
+73d12ab on 4 Nov 2016
+23 lines (21 sloc)  743 Bytes
+  
+---
+layout: archive
+title: "Posts by Collection"
+permalink: /collection-archive/
+author_profile: true
+---
+
+{% capture written_label %}'None'{% endcapture %}
+
+{% for collection in site.collections %}
+  {% unless collection.output == false or collection.label == "posts" %}
+    {% capture label %}{{ collection.label }}{% endcapture %}
+    {% if label != written_label %}
+      <h2 id="{{ label | slugify }}" class="archive__subtitle">{{ label }}</h2>
+      {% capture written_label %}{{ label }}{% endcapture %}
+    {% endif %}
+  {% endunless %}
+  {% for post in collection.docs %}
+    {% unless collection.output == false or collection.label == "posts" %}
+      {% include archive-single.html %}
+    {% endunless %}
+  {% endfor %}
+{% endfor %}
+© 2020 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About

@@ -231,7 +231,7 @@ void printBoard(int answer, char givenBoard[3][3])
 ## 책의 코드
 
 <details>
-<summary>LIS - 책의 코드</summary>
+<summary>TICTACTOE - 책의 코드</summary>
 <div markdown="1">
 
   

@@ -45,7 +45,6 @@ n개의 정수가 일렬로 놓인 게임판에서 현우와 서하가 게임을
 <div markdown="1">
 
 ```
-#include "../pch.h"
 #include <stdio.h>
 #include <string.h>
 #include <iostream>

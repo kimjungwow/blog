@@ -2,7 +2,7 @@
 title: "BAEKJOON :: Baaaaaaaaaduk2(easy) (16988)"
 date: 2020-02-11 17:31:00 -0400
 categories: 알고리즘_문제풀이 
-tags: BAEKJOON
+tags: BAEKJOON DFS
 ---
 
 # Baaaaaaaaaduk2(easy) ( [16988](https://www.acmicpc.net/problem/16988) )

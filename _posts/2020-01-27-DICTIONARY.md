@@ -2,7 +2,7 @@
 title: "Algospot :: DICTIONARY (고대어 사전)"
 date: 2020-01-27 01:31:00 -0400
 categories: 알고리즘_문제풀이 
-tags: Algospot
+tags: Algospot DFS
 ---
 
 # 고대어 사전 ( [DICTIONARY](https://algospot.com/judge/problem/read/DICTIONARY) , 하)

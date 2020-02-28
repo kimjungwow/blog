@@ -1,3 +1,10 @@
+---
+title: "Resume"
+date: 2020-02-28 15:31:00 -0400
+categories: 
+tags: 
+---
+
 ****Jungwoo Kim****
 ===========
 > [jw950310@gmail.com](mailto:jw950310@gmail.com) |

@@ -5,7 +5,7 @@ categories: 알고리즘_문제풀이
 tags: Algospot Greedy_Method
 ---
 
-# 출전 순서 정하기 ( [MATCHORDER](https://algospot.com/judge/problem/read/MATCHORDER) , 중)
+# 출전 순서 정하기 ( [MATCHORDER](https://algospot.com/judge/problem/read/MATCHORDER) , 하)
 
 ## 문제  
 러시아팀과 한국팀이 코딩 게임을 한다. 각 선수의 능력치가 주어지며, n명이 차례로 나와 1대1로 승부를 겨룬다. 능력치가 높은 선수가 무조건 이기며, 더 많이 이긴 팀이 승리한다. 러시아 선수들의 출전 순서가 주어질 때, 한국팀은 최대 몇 승을 할 수 있을까?

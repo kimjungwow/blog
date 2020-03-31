@@ -48,3 +48,15 @@ H&P textbook Appendix A를 읽고 정리했다.
   - Variable : 모든 operation에 많은 addressing mode 가능해서 코드가 짧아지지만, 다양한 길이의 instruction 가능
   - fixed : 통일된 길이의 instruction 가능하지만, 코드가 길어짐. performance 좋아짐
   - hybrid : 둘의 장점을 합침
+
+- compiler
+  - global common subexpression elimination
+  - 같은 값 계산하는 두 instance 찾아서 두 번째 계산부터는 첫 번쨰 계산의 결과를 이용. 이 때 첫 결과는 메모리가 아니고 레지스터에 저장되어야 빨라서 최적화의 의미가 있음. 하지만 register allocation은 최적화의 나중 단계에 진행되서, phase ordering이 어렵다.
+  - register allocation은 graph coloring와 비슷해 heuristic algorithm으로 풀 수 있지만, integer type을 위한 16개 이상의 레지스터 + floating point type을 위한 별도의 레지스터가 있어야 잘 동작한다.
+  - how high-level languages allocate data
+    - stack : local variable. 주소는 stack pointer에 상대적인 주소로 표현되며, array형 데이터보다는 single variable(scalar).
+    - global data area : statically declared object (global var, constant - 주로 array)
+    - heap : dynamic objects. 보통 scalar는 아님.
+    - register allocation은 stack이 제일 적절. 또한 aliased variable은 register에 등록 못 함. aliasing이란, 메모리의 데이터에 다른 symbolic name을 이용하여 접근할 수 있는 경우. 예 : `int arr[2]={1,2}; int i=10; arr[2]=20;`시 실제 i의 주소에는 20이 들어감. 하지만 컴파일러는 i의 값을 레지스터에 저장해 10임을 앎?
+  - Some instruction set properties
+    - Provide regularity : operations, data types, addressing modes 가 각각 orthogonal. orthogonal이란 independent하다는 뜻. 하나의 addressing mode는 어떤 operation과 사용해도 같은 값 나오는 것이 orthogonal

@@ -60,3 +60,30 @@ H&P textbook Appendix A를 읽고 정리했다.
     - register allocation은 stack이 제일 적절. 또한 aliased variable은 register에 등록 못 함. aliasing이란, 메모리의 데이터에 다른 symbolic name을 이용하여 접근할 수 있는 경우. 예 : `int arr[2]={1,2}; int i=10; arr[2]=20;`시 실제 i의 주소에는 20이 들어감. 하지만 컴파일러는 i의 값을 레지스터에 저장해 10임을 앎?
   - Some instruction set properties
     - Provide regularity : operations, data types, addressing modes 가 각각 orthogonal. orthogonal이란 independent하다는 뜻. 하나의 addressing mode는 어떤 operation과 사용해도 같은 값 나오는 것이 orthogonal
+  - Provide primitives, not solutions
+    - 특정 언어에만 적절한 기능은 다른 언어에는 부적절
+  - Simplify trade-offs among alternatives
+    - 예 : 메모리가 아닌 레지스터에 저장하기를 몇 번 이상 참조될 때 해야 이득인가
+  - Provide instructions that bind the quantities known at compile time as constatns 
+    - compile time에 정해지는 것을 run-time에 interpret하면 compiler는 안 좋아함
+  - Multimedia Instructions (SIMD?)
+    - Vector computers include *strided addressing* and *gather/scatter addressing*.
+      - *strided addressing* : 일정한 길이를 skip. sequential addressing = *unit stride addressing*
+      - *gather/scatter addressing* : find their address in another vector register
+
+- MIPS64 : load-store architecture
+  - Registers
+    - 32개의 64-bit General-Purpose Registers (R0...R31)
+    - 32개의 Floating-Point Registers
+    - R0의 value는 항상 0
+  - Instructions
+    - 32 bits. 앞의 6bit는 opcode
+    - Immediate는 16bits
+    - Control Flow Instructions
+      - How to specify destination address 
+        - PC-relative (replace lower 28 bits of PC)
+        - address in a register
+    - Compare Instruction
+      - Set True(1)/False(0) to result register
+    - Floating-point operation
+      - *paired single* operation : 하나의 64-bit floating-point register에 앞 뒤로 2 개의 32-bit floating-point가 있다고 생각하고 진행

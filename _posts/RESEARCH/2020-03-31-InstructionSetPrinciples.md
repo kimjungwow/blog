@@ -87,3 +87,55 @@ H&P textbook Appendix A를 읽고 정리했다.
       - Set True(1)/False(0) to result register
     - Floating-point operation
       - *paired single* operation : 하나의 64-bit floating-point register에 앞 뒤로 2 개의 32-bit floating-point가 있다고 생각하고 진행
+    - load 바로 뒤에 ALU에서 메모리부터 읽어온 값을 필요로 하는 경우, bypassing으로 해결 불가
+    - pipeline interlock이 hazard감지하여 stall 삽입
+
+## Branch prediction
+- PC가 target address로 바뀌는 지에 따라 taken/untaken
+- addr이 계산될때까지 정확한 PC 모름. compare는 ID에서 확인됨
+- How to handle branches
+  - freeze or flush : PC+4 fetch했다가, taken이면 그 I를 무시함
+  - branch 다음 I를 IF 두 번: 매 branch마다 stall 1 발생
+  - predict taken scheme : target이 EX에서 정해진 뒤 예측해도 빨라지지 않으니 예측의 의미가 없음 (HW가 지원되면 미리 target address 알 수 있음)
+  - delayed branch :일단 다음 I fetch후 taken이면 target으로감, 하지만 branch의 바로 뒤PC가 역시 branch면 애매해짐. canceled branch : branch slot의 예측이 부정확하면 no op으로 바꿈
+- Dynamic branch prediction :Branch history table / Branch prediction buffer
+  - 1-bit prediction : 거의 taken인 경우 not taken 마다 miss두번
+
+# C.3 How is Pipelining Implemented?
+
+- Stage별 특이점
+  - ID : decoding과 reading registers 동시에 가능.
+    - 이것들이 MIPS instruction format에서 정해진 위치에 있기 떄문
+  - EX : effective address 계산, execution cycle을 하나의 stage에서 가능 -> 둘 다를 요구하는 I는 없기 때문
+  - MEM : nonpipelined에서는 MEM stage에서 PC에 적지만, pipelined에서는 MEM과 IF가 동시에 PC 변경 가능하다. 따라서 target address를 right to left로 옮김
+  - WB : register file에 적음
+- pipeline latches = pipeline registers
+- *instruction issue* : ID -> EX로 instruction이 이동. data hazard는 ID에 파악되며, 마찬가지로 forwarding이 필요한지도 ID에 파악됨
+- hazard, forwarding 파악하기 위한 다른 방법 : EX와 MEM 시작 전에 operand를 사용ㅎ는지 파악
+- 각 I의 destination register와 뒤, 뒤뒤 I의 source register만 비교하면 됨. R0은 항상 0이므로, R0에 대한 hazard는 무시해도 됨.
+- stall하려면 ID/EX pipeline register를 모두 0으로 바꾸고 (no-op), IF/ID pipeline register는 그대로 유지하도록 한다.
+- 하나의 ALU를 추가하여 branch comparison과 target address 계산을 ID stage에서 진행하면 branch stall을 3 cycles에서 1 cycle로 줄이게 된다. (기존에는 MEM stage에 target address를 PC로 전달)
+  - branch target과 condition을 빨리 판단해서 1 cycle 줄어듦
+  - target address를 판단한 cycle과 같은 cycle에 보내서 1 cycle 더 줄어듦
+- jump에서는 주어진 26비트를 shift 2한뒤 PC에 더함(word 기준이어서 4 곱함?)
+
+# C.4 What Makes Pipelining Hard to Implement?
+
+- Exception : pipeline에서 진행되던 I들을 abort. 하지만 CPU의 state를 바꾸는 것이 안전한지 파악하기 어려움
+- Exception 발생시 HW에서 어떻게 해야하는가?
+  - *Asynchronous versus Synchronous*
+    - *Synchronous* : 프로그램이 같은 data, memory allocation일 때 event 발생.
+    - *Asynchronous* : CPU/memory 말고 외부의 장치 때문에 생긴 event, 현재 진행중인 I를 끝낸 뒤 handle해도 되서 대체로 편함
+  - *User requested versus coerced*
+    - 유저가 의도한 exception : *User requested*. 예측 가능
+    - *coerced* : 유저가 의도하지 않음. 예측하기 어려움
+  - *User maskable versus user nonmaskable*
+    - user task에 의해 masked/disabled 될 수 있으면 user maskable. 이 때 mask는 단순히 HW가 exception에 응답하는지 아닌지를 통제함.
+  - *Within versus between instructions*
+    - event가 I 도중에 일어나는지, I와 I 사이에 일어나는지로 구분. I 도중에 일어나면 I들이 멈춘 뒤 재시작해야하서 더 다루기 어려움
+  - *Resume versus terminate*
+    - 프로그램이 항상 interrupt 이후에 멈추면 *terminating* event
+    - interrupt 이후에도 프로그램이 계속 실행되면 *resuming* event
+    - *termination* event가 더 다루기 쉬움. handling 후에 CPU가 그 프로그램을 restart할 필요 없기 떄문
+
+

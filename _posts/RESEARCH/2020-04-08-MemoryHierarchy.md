@@ -7,6 +7,7 @@ tags: Study Architecture
 H&P textbook Appendix B를 읽고 정리했다.  
 
 # B.1 Introduction
+
 - cache miss
   - latency : block의 첫 word 받는데 걸리는 시간
   - bandwidth : 나머지 내용들을 받는데 걸리는 시간
@@ -56,3 +57,9 @@ H&P textbook Appendix B를 읽고 정리했다.
 # B.2 Cache Performance
 
 - Instruction count와 miss rate가 HW와 독립적이라고 memory hierarchy의 performance를 판단하는 근거로 사용하는 것은 부적절하다. **Average Memory Access Time (AMAT)**로 판단하는게 더 낫다. `AMAT = Hit time + Miss rate X Miss penalty`
+
+## Average Memory Access Time and Processor Performance
+
+- cache miss로 인한 AMAT로 processor 성능을 판단하는 것이 적절한가?
+  - 모든 memory stall이 cache miss 떄문이 아니다 (memory 사용하는 I/O device 때문일수도 있다)
+  

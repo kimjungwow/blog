@@ -62,4 +62,70 @@ H&P textbook Appendix B를 읽고 정리했다.
 
 - cache miss로 인한 AMAT로 processor 성능을 판단하는 것이 적절한가?
   - 모든 memory stall이 cache miss 떄문이 아니다 (memory 사용하는 I/O device 때문일수도 있다)
+  - In-of-Order processor에서는 AMAT로 성능 판단 가능. (cahe miss로 인한 stall이 성능에 영향이 크기 때문) : 하지만 AMAT가 작다고 꼭 CPU execution time이 작지 않음
+- CPI가 작을 수록, clock rate가 클 수록 CPU execution time 에서 cache영향이 크다
+
+## Miss Penalty and Out-of-Order Execution Processors
   
+- Out-of-Order에서는 cache miss가 좀 많아도, miss를 일부 hide하면 성능이 더 좋을 수도 있음.
+- Out-of-Order에서는 AMAT개선이 CPU time개선에 직결되지 않을 수 있어서 복잡함
+
+# B.3 Six Basic Cache Optimizations
+
+- Optimizing cache
+  - Reducing the *miss rate*
+    - larger block size, larger cache size, and higher associativity
+  - Reducing the *miss penalty*
+    - multilevel caches and giving reads priority over writes
+  - Reducing the *time to hit in the cache*
+    - avoidng address translation when indexing the cache
+
+- Three categories of miss
+  - Compulsory
+    - 첫 access는 cache hit일 수 없음. = *cold-start misses* = *first-reference misses* (cache size에 관련 X)
+  - Capacity
+    - cache이 프로그램 실행 중 필요한 block들을 모두 담기에 작은 경우, capacity miss 발생 (cache 전체 사이즈에 영향)
+  - Conflict
+    - n-way set-associative에서 특정 set에 n개 초과 request 발생시 conflict miss 발생 (n에 영향)
+    - full associative면 conflict miss가 없지만 HW에서 구현하려면 비싸고, 성능도 안 좋을 수 있음
+  - Coherence miss도 있지만 아직 다루지 않음
+
+- *thrash* : upper-level cache가 너무 작으면 low-level memory만 있는 것과 같은 성능이 날 수도 있고, 오히려 miss overhead 때문에 성능이 더 안 좋을 수도 있음
+- block size를 늘리면 compulsory miss는 줄어들 지라도, 다른 miss가 늘어날 수 있음
+- cache size를 늘리면 capacity miss는 줄어들 지라도, 특정 set에 할당되는 reference가 많아져 conflict miss 늘어날 수도 있음
+- miss rate를 줄이면 hit time/miss penalty 증가할 수 있으므로 균형을 맞추어야 함
+
+## First Optimization : Larger Block Size to Reduce Miss Rate
+
+- Larger Block size reduces compulsory misses (thanks to spatial locality)
+- increase conflict misses 
+- increase capacity misses when cache is small
+- The increase in miss penalty may outweigh the decrease in miss rate
+- block size가 cache size에 비해 너무 커지면 miss rate가 오히려 증가
+- high latency, high bandwidth : bigger block size
+
+## Second Optimization: Larger Caches  to  Reduce  Miss  Rate
+
+- Larger cache
+  - lower miss rate
+  - higher bit time, cost, power
+
+## Third Optimization:  Higher  Associativity to  Reduce  Miss  Rate
+
+- Two rules of thumb
+  - 8-way associative is almost effective as full associative
+  - direct cache with size N has same miss rate with 2-way cache with size n/2
+
+- higher associativity
+  - bigger hit time
+  - lower miss rate
+  - cache size 커지면 큰 hit time으로 인해 higher associativity의 AMAT 커짐
+
+## Fourth Optimization: Multilevel Caches to Reduce Miss Penalty
+
+- 프로세서는 점점 빨라져서 memory stall을 해결하는 것이 중요해짐
+  - cache를 더 빠르게 만들어 메모리도 프로세서와 비슷한 속도로 만들거나
+  - cache를 더 크게 만들어서 프로세서와 메모리의 차이를 극복하거나
+- first-level cache는 빠른 프로세서의 clock cycle에 부합하는 작은 크기로, second-level cache는 충분히 크게 만드는 multilevel caches
+- *Local miss rate* : 단순히 cache misses를 해당 cache에서의 memory accesses로 나눔
+- *Global miss rate* : cache misses를 processor에 의해 시작된 memory accesses로 나눔. `L2의 Global miss rate = Miss_rate_L1 X Miss_rate_L2`

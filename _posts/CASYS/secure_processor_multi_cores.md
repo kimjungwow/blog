@@ -1,10 +1,11 @@
-
 ---
 title: "CASYS :: Secure Processor"
 date: 2021-01-11 16:51:00 +0900
 categories:  
 tags: 
 ---
+
+## Reducing the Memory Bandwidth Overheads of Hardware Security Support for Multi-Core Processors
 
 Secure processor provides **confidentiality** and **integrity**.  
 
@@ -31,4 +32,23 @@ Baseline Secure Processor
   - A counter entry covers a 4KB page
   - the height of BMT is significantly shorter than the Merkle tree for MAC
 
-2.3까지
+Data Miss Handling
+- If a counter is not in the counter cache,
+  - fetch it from the external memory
+  - and verify the integrity of counter using the BMT
+
+Multi-Core Scalability of Secure Processors
+- Goal : To improve the performance of secure processors as close as to that of non-secure processors
+  - Multi-cores have lower off-chip memory bandwidth per core
+- Caching strategy
+  - **LLC (Last Level Cache) should be shared by all types of data, counter, hash and MAC blocks**
+    - MAC blocks aren't cached in single-core
+- Memory scheduling
+  - **Prioritize memory requests based on block types**
+    - Hash and MAC blocks are used for integrity checking
+    - integrity checking can be postponed : core can continue to execute instructions during the integrity checking process
+    - Use *DC priority* scheme : high priority to data and counter blocks
+    - Use threshold counter to schedule non-priority requests sometimes
+  - Improve row buffer hit rates in the DRAM by **locating MAC (M) in the same row as the corresponding data (D)** : *DM coupling*
+- Type-aware **dynamic cache insertion**
+  - Use MRU, BIP, or half-MRU insertion

@@ -1,8 +1,8 @@
 ---
 title: "CASYS :: Secure Processor"
 date: 2021-01-11 16:51:00 +0900
-categories:  
-tags: 
+categories: 
+tags: 논문
 ---
 
 ## Reducing the Memory Bandwidth Overheads of Hardware Security Support for Multi-Core Processors

@@ -1,7 +1,7 @@
 ---
 title: "CASYS :: Common Counters"
 date: 2021-01-13 16:51:00 +0900
-categories:
+categories: casys
 tags: 논문
 ---
 

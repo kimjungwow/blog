@@ -1,7 +1,7 @@
 ---
 title: "CASYS :: Secure Processor"
 date: 2021-01-11 16:51:00 +0900
-categories: 
+categories: casys
 tags: 논문
 ---
 

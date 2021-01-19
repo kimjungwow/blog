@@ -93,6 +93,7 @@ Existing CNN dataflows
         - intra-set convolutional reuse + psum accumulation at array level 보존
         - 서로 다른 set끼리도 data reuse + psum accumulation 가능하기 때문 (서로 다른 set에서 같은 부분을 하나의 physical PE로 합칠 때)
     - physical PE는 여러 개의 logical PE sets (a *processing pass*)를 실행하는데, *processing pass* 단계에서의 folding도 필요함
+  - Eyeriss의 PE는 RS를 위해 특별한 디자인을 선택함 -> Scale-Sim에서
 
 
 Analysis

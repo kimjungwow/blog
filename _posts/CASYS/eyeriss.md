@@ -1,7 +1,7 @@
 ---
 title: "CASYS :: Eyeriss"
 date: 2021-01-18 16:51:00 +0900
-categories: casys
+categories: Study
 tags: 논문
 ---
 

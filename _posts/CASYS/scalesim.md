@@ -1,0 +1,50 @@
+---
+title: "CASYS :: SCALE-Sim"
+date: 2021-01-121 16:51:00 +0900
+categories: Study
+tags: 논문
+---
+
+Deep Learning Accelerator에 유용한 Systolic Arrays (dense MM 효율 좋음)
+- **operand reuse -> keep Processing Engines busy**
+- neighbor끼리만 데이터 전달 + global communication X
+- 하지만 관련 시뮬레이터가 없음
+DNN accelerator
+- 보통 MAC 연산하는 compute units 여러 개 가짐.
+- *dataflow*란 how to map the compute onto array.
+- 고려하는 점
+  - (1) **하나의 dataflow를 정해놓고** 그것을 최적화하는 DNN accelerator 만듦. 
+  - (2) 그 후 **compute units을 어떻게 배치할지** 고민 (최대한 쉬지 않고 동작하기 위해) 
+  - (3) on-chip memory size도 고민 (power-performance balance)
+
+SCALE-Sim
+- convolution과 matrix-matrix(MM) multiplication 지원
+  - **systolic array** (effective + energe-efficient)
+  - 각 PE(MAC unit)은 incoming data를 PE 내부의 레지스터에 담아두었다가, 다음 cycle에 다른 PE에 넘겨줌. 이 방식이 SRAM read bandwidth 절약 + convolution에서 가능한 reuse 최대화
+  - PE array가 SCALE-sim에서는 직사각형도 가능
+- WS, IS, OS만 고려
+  - RS는 Eyeriss의 PE 디자인에서만 가능
+  - NLR은 buffer size 작을 때 사용
+- Output Stationary (OS)
+  - output feature map(ofmap)의 각 픽셀이 각 PE에 "pinned"
+  ![Imgur](https://imgur.com/koXtJ17.png)
+  - 위 논문 그림의 오류 : 위쪽에서 전해지는 weight는 순서가 A1-B1-C1-D1이 아닌, A1-D1-G1-B1이 되어야 함?
+- Weight Stationary (WS)
+  - weight가 각 PE에 고정 + partial sum도 array에 저장되있으며, MAC unit간 전달하며 reduced
+  - input은 왼쪽에서 + partial sum은 위에서 아래로 reduced
+- Modeling Memory
+  - operand reuse 최대화시키는 것이 CNN에서 중요한데, 이를 위해서는 memory hierarchy를 잘 디자인해야함. SCALE-Sim에서는 memory hierarchy를 직접 설정할 수 있음
+- Modeling System Interface
+  - SCALE-SIM은 DNN accelerator를 system interconnect에 연결 -> 무슨 의미인지는 잘 이해못함
+- User Interface
+  - config file : array/memory size
+  - topology file : DNN layer들의 hyper-parameter
+- DNN accelerator는 있지만, 성능/에너지 효율 고려하기 위한 simulator 없었음
+- 관찰
+  - 주어진 systolic array micro-architecture에 대한 dataflow 별 성능 파악
+  - 에너지 + 성능 모두 좋은 scratchpad size를 선택하기 위해 어떤 점을 고려해야하는지 파악
+  - inference 성능에 array(aspect ratio)가 어떤 영향을 미치는지 파악
+  - *scaling-up* vs *scaling-out*
+  - 시뮬레이션 결과 분석
+    - stationary matrix가 array에 mapped되는 횟수가 적을 수록 성능 좋음
+    - 그 외에는 그때그때 다른 것 같아 적지 않음

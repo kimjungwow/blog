@@ -27,7 +27,7 @@ Innovation
   - NVBit을 이용해 관측
 - *Common Counter Status MAP (CCSM)*
   - tells whether the requested address can be served by a common counter
-  - *initial write once* | kernel execution 마다 수정됨
+  - initial write once 혹은 kernel execution 마다 수정됨
   - Number of distinct counters도 수가 매우 적음
     - CCSM을 GPU-wide로 사용하며, segment당 4 bits 사용 -> invalid + 15개의 valid common counters
     - common counter set은 per-context

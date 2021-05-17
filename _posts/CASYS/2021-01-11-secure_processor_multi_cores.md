@@ -9,14 +9,14 @@ tags: 논문
 
 Secure processor provides **confidentiality** and **integrity**.  
 
-**confidentiality**
+**confidentiality** : 허가된 자만 접근할 수 있게
 - Requires data encryption for all off-chip data
 - Requires data decryption when fetching off-chip data into on-chip cache
 - Counter-mode encryption : techinque to eliminate complex computation for decryption off the critical path
   - Overlap OTP (one-time pad) construction with off-chip memory access
   - Use a separate counter cache to hold frequently used counters
 
-**integrity**
+**integrity** : 특정 데이터를 보호해 데이터를 정상인 상태로 유지하는 성질
 - MAC (Message Authentication Code) : a keyed hash value of the corresponding cacheline
   - When cache miss occurs, generate another MAC using the normal data and MAC
   - Compare two MAC values for any changes while the cacheline was residing in the memory

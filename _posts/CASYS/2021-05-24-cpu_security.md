@@ -30,3 +30,21 @@ receiver는 받은 pad의 counter와 pre-generated pad의 counter가 같은지�
 -> 따라서 sender가 보낸 순서대로 receiver에게 도착하지 않으면 (드문 경우지만), pad를 만들기 위해 기다리는 시간이 늘어나 성능 감소
 
 ## 5.2 Shared Counter Stream
+
+Private scheme에서는 processor 수 커지면 storage overhead가 늘어남을 해결하기 위한 scheme
+
+sender가 모든 receiver에 대해 하나의 counter를 사용함. 그에 따라 receiver는 불연속적인 counter를 받을 확률이 커져서, counter hit rate가 감소함
+
+## 5.3 Cached Counter Stream
+
+앞선 두 scheme은 고정된 수의 processor에서만 사용 가능한 scalability 문제가 있었는데, 이를 해결하기 위한 scheme
+
+각 프로세서는 나머지 모든 프로세서가 아닌, 일부 프로세서와만 communicate하는 경우가 많기 때문에 send/receive table을 캐시로 대체하면 성능이 좋아짐 + 기존 캐시와 다르게 write back이 필요 없고 그냥 버리면 됨
+
+문제는 cache miss 발생시 counter를 어떻게 할지
+- receiver는 sender가 보낸 counter 사용
+- sender는 지금까지 자기가 사용한 가장 큰 counter (maxCtr)를 기억해둬서, 그것보다 1큰 값을 사용
+
+Cached scheme은 연속적인 counter value 받을 확률이 커서 shared보다는 성능이 좋지만, private보다는 성능이 안 좋음.
+대신 scalability 해결
+

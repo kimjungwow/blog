@@ -48,3 +48,7 @@ sender가 모든 receiver에 대해 하나의 counter를 사용함. 그에 따�
 Cached scheme은 연속적인 counter value 받을 확률이 커서 shared보다는 성능이 좋지만, private보다는 성능이 안 좋음.
 대신 scalability 해결
 
+## 5.4 Detecting Replay Attacks
+
+old message/MAC 사용하는 replay attack을 막기 위해, message 속 counter가 receive table 속 counter보다 작으면 replay attack으로 취급하면 안 된다. sender가 보낸 메시지가 다른 순서로 도착하는 out-of-order message delivery 때문이다.
+

@@ -88,3 +88,4 @@ P8 : Dimension size prediction : ReLU kernel이 보통 large read cache miss 가
 
 #### 5.1.1 Problem Formalization
 
+P1 : Run-time layer sequence identification problem 설명 : 

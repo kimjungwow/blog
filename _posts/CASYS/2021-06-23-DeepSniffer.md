@@ -88,4 +88,17 @@ P8 : Dimension size prediction : ReLU kernel이 보통 large read cache miss 가
 
 #### 5.1.1 Problem Formalization
 
-P1 : Run-time layer sequence identification problem 설명 : 
+P1 : Run-time layer sequence identification problem 설명
+- input : architectural hint vectors of kernel sequence X with temporal length of T
+- time step t의 kernel feature X_t는 multiple-dimension tuple of arhictectural hints
+- goal : train a layer sequence identifier h, ground-truth layer sequence (L\*)과 가장 가까운 run-time layer sequence L를 예측하기
+
+P2 : Run-time layer sequence identification은 kernel model과 layer-sequence model로 이루어짐
+- kernel model : architectural hint와 kernel type의 관계
+  - **architectural hint vector에는 kernel execution latency, Read volume, write volume, kernel dependency distance가 포함됨**
+- layer-sequence model : layer간의 확률 분포
+  - speech에서 이야기한 예 : 하나의 linear layer로 이루어진 basic block가 batch normalization을 가지고 있지 않다면, 그 block은 ReLU와 같은 nonlinear layer로 끝남.
+**Run-time layer sequence prediction이 speech recognition과 비슷**하기 때문에, DeepSniffer는 speech recognition에서 사용되는 방법들을 활용함
+
+[fig3](https://imgur.com/xTJWhEM.png)
+

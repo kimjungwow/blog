@@ -102,3 +102,32 @@ P2 : Run-time layer sequence identification은 kernel model과 layer-sequence mo
 
 [fig3](https://imgur.com/xTJWhEM.png)
 
+#### 5.1.2 Kernel and Layer Features
+
+##### Architectural Hints of A Single Kernel
+
+P1 :  kernel depedency distance(kdd, bus snooping 시나리오에서만), kernel execution latency, read volume, write volume, input/output data volume ratio
+kdd : 어느 커널과, 그 커널 이전의 dependent 커널 중 최대 거리 : layer topology information을 담음
+
+P2 : 하지만 single kernel architectural hint만 이용해서, kernel이 어떤 layer에 속하는지, 즉 layer sequence를 예측하기는 어렵다.
+
+##### Inter-Layer Sequence Context
+
+P3 : **layer사이의 temporal association**을 이용하면 model extraction을 더 잘 할 수 있음.
+예를 들어, linear transformation layer가 두 번 연속 나오는 것은 말이 안 되기 때문에, DNN model에서 FC layer 바로 뒤에 Conv layer가 올 확률은 낮다.
+- architecture는 iteratively connected basic blocks로 구성됨 (같은 구성이 연속적으로 나온다는 의미인듯?)
+- basic block의 구성 순서
+  - Conv, FC와 같은 linear operation
+  - convergence를 개선하기 위해 batch normalization
+  - 그 뒤에
+    - ReLU 같은 non-linear transformation 혹은 
+    - Pool같은 down-sampling layer 혹은 
+    - Add나 Concat 같은 tensor reduction or merge
+  
+P4 : P3에서 이야기한 layer context가 실제 network architecture design에도 반영되고 있기 때문에, 이 논문의 layer identification에서 사용할 수 있음
+
+#### 5.1.3 Context-aware Layer Sequence Identification
+
+P5 : context-aware layer sequence identifier h에 대해, h(X)가 최대한 target layer sequene 
+
+

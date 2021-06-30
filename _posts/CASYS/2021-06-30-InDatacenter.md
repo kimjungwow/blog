@@ -23,7 +23,7 @@ P4 : NN의 세 종류
 - Recurrent Neural Networks (RNN): 각 layer는 이전 layer의 output과 previous state를 이용함. 예를 들어 Long Short-Term Memory인 LSTM은 무엇을 forget/pass 할지 적절히 정함
 
 P5 : Table 1 + TensorFlow로 짜면 NN들 코드 짧음
-[table1](https://imgur.com/Xbe5xCB.png)
+![table1](https://imgur.com/Xbe5xCB.png)
 
 P6 : Table 1에서 보면 weight는 5~100MB 필요한데, time/energy to access weight를 줄이기 위해 weight를 batch 단위로 재사용해 성능 향상 시킴
 
@@ -44,7 +44,7 @@ P2 : TPU를 CPU와 통합하는 대신, GPU처럼 PCIe I/O bus로 연결된 copr
 
 P3 : inference 전체를 TPU에서 실행함으로써 CPU와의 통신을 줄이고, TPU 개발 시점보다 더 미래의 NN 까지 다룰 수 있는 TPU를 디자인하는 것이 목표이다.
 
-[fig1](https://imgur.com/l0HO8Ob.png)
+![fig1](https://imgur.com/l0HO8Ob.png)
 
 P4 : Figure 1 설명
 - host가 보내는 TPU instruction은 왼쪽의 PCIe interface를 통해 들어옴
@@ -59,9 +59,9 @@ P5 : Figure 1 설명 계속
 - Weight FIFO는 Weight Memory라 불리는 8GB DRAM로부터 weight를 읽어오는데, inference에서는 weight은 read-only
 - unified buffer는 intermediate results를 저장하는데, CPU Host memory와 데이터를 주고 받음
 
-[fig2](https://imgur.com/l0HO8Ob.png)
+![fig2](https://imgur.com/l0HO8Ob.png)
 
-[fig3](https://imgur.com/3jiPlbf.png)
+![fig3](https://imgur.com/3jiPlbf.png)
 
 P6 : Figure 2 설명
 - datapath가 TPU die의 2/3 차지함
@@ -75,3 +75,57 @@ P7 : TPU instruction은 PCIe bus를 통해 전달되기 때문에, TPU instructi
 3. MatrixMultiply/Convolve : B X 256 input과 256 X 256 matrix를 곱해 B X 256 output matrix 구함
 4. Activate : ReLU, Sigmoid, Pool 등
 5. Write_Host_Memory : unified memory의 data를 CPU host memory에 적음
+
+P8 : 다른 instruction 설명
+
+P9 : TPU는 instruction execution latency를 숨기기 위해 4-stage pipeline 사용.
+- Read_weight는 addr만 보내면 종료 가능 (weight이 weight memory로부터 도착하기 전에)
+- MatrixMultiply는 weight와 activation이 준비되지 않았으면 stall함
+
+P10 : 한 stage가 최대 수천 cycle 차지 가능 -> 예를 들면, matrix multiplication이 시작하기 전에 이전 layer가 끝나야, unified buffer로부터 안전하게 읽을 수 있는 RAW pipeline stall
+
+![fig4](https://imgur.com/yQrgJWA.png)
+
+P11 : unifed buffer에 접근해 read/write 하는 것보다 arithmetic operation이 빠르기 때문에, systolic array 형태로 memory access를 최소화하고 data reusage를 늘린다.
+
+P12 : TPU Software stack은 User Space Driver와 Kernel Driver로 구성됨. Kernel Driver는 lightweight하며, memory management나 interrupt만 담당함
+
+P13 : User Space Driver는 나머지 담당 : user API를 TPU가 이해할 수 있는 instruction으로 바꾼다.
+
+## 3 CPU, GPU, AND TPU PLATFORMS
+
+P1 : benchmark 6개 재언급
+
+P2 : 논문에서 사용한 TPU 환경
+
+P3 : 논문에서 사용한 CPU, GPU, TPU
+
+P4 : Haswell CPU에서 Turbo mode는 포함하지 않음 -> Turbo mode는 모든 코어가 사용되는 것이 아닐 때를 위한 것인데, 이 data center에서는 보통 모든 코어가 사용됨 (심지어 다른 datacenter job을 실행하여 idel core가 없게 하기도 함)
+
+P5 : K80 GPU는 internal memory와 DRAM에 SECDED protection을 필요로 함
+
+P6 : 사용되는 die의 개수가 일정하지 않기 때문에, 이 논문에서는 die의 개수에 정규화된 결과를 보여줄 것이다.
+
+## 4 PERFORMANCE: ROOFLINES, RESPONSE TIME, AND THROUGHPUT
+
+P1 : 세 가지 프로세서의 성능 평가할 때 high-performance computing (HPC)의 Roofline Performance model을 사용했는데, on-chip cache의 크기가 충분하지 않게 해 computation limited 혹은 memory bandwidth limited가 되도록 한다.
+X축은 operational intensity (접근된 DRAM byte당 floating-point operation 개수, FLOPS/Byte), Y축은 FLOPS/sec이다. operational intensity가 충분히 크지 않으면, roofline model에서 기울어진 부분은 memory bandwidth-bound임.
+
+P2 : 실제 operations per second와 X-Y 직선 간격이 operational intensity를 건들지 않고도 향상시킬 수 있는 성능의 양이다. 물론 operational intensity를 늘리면 성능이 더 증가하긴 한다.
+
+P3 : Quantized NN에서는 floating point 대신 integer point operation 횟수를 셈
+
+![fig5](https://imgur.com/lp0aPaB.png)
+
+P4 : fig5 처럼 slanted part가 길다면 peak compute가 아닌 memory bandwidth 때문에 성능이 제한되는 것이다. fig5에서 LSTM와 MLP는 slanted part 아래에 있기 때문에 memory bandwidth가 bottlenectk이다. CNN은 slanted part가 아니므로 peak computation rate가 bottleneck이다.
+
+P5 : fig5의 CNN1 결과를 설명함. feature depth가 얕아서, 적은 수의 MAC만 useful weight를 가지고 있고, 많은 사이클 동안 weight가 메모리부터 읽어지기를 기다려야 하는 것이 문제임
+
+P6 : fig 6,7에 나타나듯, CPU와 GPU는 response time이 길기 때문에 TPU 보다 ceiling(X-Y선) 보다 한참 아래에 있음. inference는 유저가 직접 보는 경우가 많기 때문에, response time이 길어지면 서비스를 사용하지 않을 확률이 커지는게 문제임.
+
+![fig6,7](https://imgur.com/Ni0zTRh.png)
+
+P7 : MLP0에서 response time을 7ms로 제한하는 경우, CPU와 GPU는 그렇지 않은 경우보다 per die throughput (IPS)가 크게 (42%, 37%) 떨어지지만, TPU는 상대적으로 IPS가 덜 떨어진다 (80%). 
+이는 TPU가 CPU, GPU처럼 일반 적인 경우에 transistor/energy 사용량을 줄이기 위한 microarchitectural features들 (예: out-of-order execution, multiprocessing 등)가 single-threaded TPU에 없기 때문이다.
+
+P8 : 

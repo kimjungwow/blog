@@ -128,4 +128,85 @@ P6 : fig 6,7에 나타나듯, CPU와 GPU는 response time이 길기 때문에 TP
 P7 : MLP0에서 response time을 7ms로 제한하는 경우, CPU와 GPU는 그렇지 않은 경우보다 per die throughput (IPS)가 크게 (42%, 37%) 떨어지지만, TPU는 상대적으로 IPS가 덜 떨어진다 (80%). 
 이는 TPU가 CPU, GPU처럼 일반 적인 경우에 transistor/energy 사용량을 줄이기 위한 microarchitectural features들 (예: out-of-order execution, multiprocessing 등)가 single-threaded TPU에 없기 때문이다.
 
-P8 : 
+P8 : TPU performance를 측정한 table 3에서 host server time은 제외되었다.
+host server time에는 CPU가 application 계산을 같이 하는 시간과, CPU와 TPU가 통신하는 시간이 있다.
+또한 TPU가 idle인 것이 CPU가 app 계산 중이어서인지, 아니면 input queue가 비어서 CPU 역시 idle이어서인지 알기 어렵다.
+
+P9 : host server overhead를 포함해, die 당 성능을 비교하면 TPU가 CPU보다는 14.5배, GPU보다는 13.2배 좋다. (geometric mean으로 비교함)
+
+P10 : P9와 달리 weighted mean으로 비교하면, TPU가 CPU보다는 29.2배, GPU보다는 15.3배 우수하다.
+actual mix of program을 알고 있으면 weighted mean을 계산할 수 있다.
+
+## 5 COST-PERFORMANCE, TCO, AND PERFORMANCE/WATT
+
+P1 : 컴퓨터를 수천 대씩 사면 성능보다 cost-performance가 중요한데, Total Cost of Ownership (TCO) 가 중요한 지표이다. 따라서 가격 관련 지표는 공개하지 못하기 때문에, TCO당 성능 대신 전력사용량(Watt)당 성능을 이 논문에서는 지표로 사용한다.
+
+[fig9](https://imgur.com/Gm4Jujm.png)
+
+P2 : fig 9에서 Total은 TPU/GPU performance/Watt 계산 시 host CPU server가 사용한 전력도 포함하고, incremental은 포함하지 않는다.
+
+P3 : fig9 수치 설명
+
+## 6 ENERGY PROPORTIONALITY
+
+P1 : Thermal Design Power (TDP) : 전력 공급 및 쿨링 비용을 포함함.
+전력을 100% 사용하는 시간은 10%밖에 되지 않으며, energy proportionality에 따라 전력 사용량은 수행하는 업무량에 비례해야 함
+
+[fig10,11](https://imgur.com/d1qkTJp.png)
+
+P2 : workload utilization의 변화에 따라 C/G/TPU 성능 및 전력사용량 비교함.
+fig 10 참고
+
+P3 : TPU는 die 당 전력소모량이 적긴 하지만, energy proportionality가 낮다. CPU와 GPU는 반대로 energy proportionality가 TPU보다 좋다.
+
+P4 : CPU server가 100% power 사용 중인 G/TPU와 함께 사용되면, CPU는 52%/69% 전력을 사용한다. 즉, 그냥 CPU server만 쓰는 것보다 CPU + 4 TPUs 하면 전력 사용량은 1.2배만 증가하지만, 80배 빠르게 CNN0 실행 가능하다.
+
+## 7 EVALUATION OF ALTERNATIVE TPU DESIGNS
+
+P1 : TPU 성능을 측정하기 위한 model을 만들었는데, model results와 hardware performance counters의 차이는 10% 미만으로 미미하다.
+
+P2 : fig 11은 여러 지표를 0.25배~4배로 바꿀 때 TPU 성능을 보여준다.
+
+P3 : fig 11 결과 설명
+- memory bandwidth를 늘리는 것이 성능에 가장 영향이 크다.
+- accumulator 증가와 상관 없이, clock rate를 바꾸는 것은 영향이 거의 없다.
+  - 이는 MLP와 LSTM은 memory bound고, CNN만 compute bound기 때문이다. 
+  - memory bound면 clock rate 올려도 차이가 없고, compute bounㅇ면 clock rate 올리면 성능 향상됨
+- accumulator 증가와 상관 없이, matrix dimension이 증가하면 성능이 살짝 감소된다. (가로 세로 각각 2배 해서 한 step당 걸리는 시간이 4배 증가했지만, 사용 안 되는 matrix unit이 많은 듯)
+
+P4 : TPU storage allocator도 개발해서, unified buffer 24MB중 14MB만 사용해도 충분하다. 따라서 더 큰 모델도 돌릴 수 있다.
+
+P5 : 개발 시간이 더 있었으면 만들 수 있었을 hypothetical TPU die (TPU') 도 평가해봤다. TPU' 에서는 GDDR5 memory를 써서 wiehgt memory bandwidth를 5배 증가시키기 때문에, 성능도 더 좋아질 것
+
+P6 : fig11은 host server time을 포함하지 않은 것이고, 포함한다면 TPU'의 성능향상 폭이 줄어들긴 한다.
+
+P7 : DDR3 weight memory를 GDDR5로 바꾸려면 memory channel 수를 두 배 늘려야해 area overhead가 1.1배 있지만, GDDR5는 memory bandwidth가 더 커서 unifed buffer의 크기를 14MB까지 줄여도 괜찮다. (이것이 area overhead 해결)
+
+P8 : TPU의 C/GPU 대비 성능 향상 재언급
+
+## 8 Discussion
+
+P1 : NN inference에서는 response time만큼 throughput도 중요하다는 오류 -> datacenter NN inference app은 response time이 아주 중요하다.
+
+P2 : K80 GPU는 NN inference에 적절하다는 오류 -> GPU는 high-bandwidth DRAM과 수천 개의 스레드를 통해 high-throughput 가지지만, CPU보다 조금만 빠르고 TPU보다는 매우 느리다.
+
+P3 : 아키텍쳐 분야에서 중요한 NN task를 무시한다는 위험 -> 요즘에는 NN 관련 논문들도 많이 나온다. 특히 CNN 관련 논문이 많은데, datacenter에서 CNN 비율은 아주 적고, 오히려 MLP와 LSTM이 많다.
+
+P4 : NN architecutre에서 Interfences Per Second (IPS)는 부정확한 지표라는 생각 -> IPS로만 판단하는 것은 위험하고, 적절한 벤치마크가 필요하다.
+
+P5 : Boost mode를 활성화하면 K80 GPU는 더 좋은 결과를 낼 것이라는 오류 -> LSTM1에서 실험해보니 clock rate 높여 성능은 좋아지지만 에너지 사용량도 많아진다.
+
+P6 : CPU나 GPU를 더 효율적으로 쓰면 TPU와 비슷한 성능을 낼거라는 오류 -> 왜 이 논문에서 특정 CPU와 GPU를 선택했는지 설명
+
+P7 : Performance counter는 NN HW에 나중에 덧붙인 것이다는 생각 -> NN HW는 성능이 중요한데, 성능을 정확히 평가하는 방법을 처음부터 알기 어려우니 106개의 performance counter를 TPU에 만들었다.
+
+P8 : 2년간 개발해보니 TPU 성능 올리기 위한 방법은 HW upgrade 뿐이라는 생각 -> HW upgrade 없이 CNN에 더 TPU를 특화시키기 위한 노력하면 개선 가능하다.
+
+P9 : domain-specific 아키텍쳐 디자인 할 때 아키텍쳐 역사를 무시했다는 생각 -> TPU의 중요한 요소인 systolic array, decoupled-access/execute, CISC instruction은 1980년대 초 아키텍쳐 분야에서 연구된 것이다.
+- systolic array : matrix multiplication unit의 area/power overhead 줄임
+- decoupled-access/execute : matrix multiplication unit이 동작함과 동시에 weight를 fetch -> double buffering인듯
+- CISC instruction : instruction을 (TPU에) 전달할 때 제한된 bandwidth를 최대한 활용함
+  
+## 9 RELATED WORK
+
+P1 : 

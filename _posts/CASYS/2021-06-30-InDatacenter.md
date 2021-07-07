@@ -69,7 +69,7 @@ P6 : Figure 2 설명
   - matrix multiply unit은 1/4
 - control을 위한 공간은 겨우 2%만 차지함
 
-P7 : TPU instruction은 PCIe bus를 통해 전달되기 때문에, TPU instruction은 CISC instruction을 따름. CISC instruction은 cycles per instruction (CPI)가 10~20으로 느리며, 중요한 instruction은 다음과 같음
+P7 : TPU instruction은 PCIe bus를 통해 전달되기 때문에, TPU instruction은 (단순한 instruction인 RISC가 아닌 다소 복잡한) CISC instruction을 따름. CISC instruction은 cycles per instruction (CPI)가 10~20으로 느리며, 중요한 instruction은 다음과 같음
 1. Read_Host_Memory : CPU host memory의 data를 unified memory에 적음
 2. Read_Weights : Weight memory의 weights를 Weight FIFO에 적어 Matrix Unit의 input으로 사용함
 3. MatrixMultiply/Convolve : B X 256 input과 256 X 256 matrix를 곱해 B X 256 output matrix 구함
@@ -207,6 +207,14 @@ P9 : domain-specific 아키텍쳐 디자인 할 때 아키텍쳐 역사를 무�
 - decoupled-access/execute : matrix multiplication unit이 동작함과 동시에 weight를 fetch -> double buffering인듯
 - CISC instruction : instruction을 (TPU에) 전달할 때 제한된 bandwidth를 최대한 활용함
   
-## 9 RELATED WORK
+### ..
+- Moore's law가 끝나가서, general purpose 대신 domain specific architecture를 개발하는 쪽으로 방향이 바뀜
+- 짧은 기간 (15개월)에 개발한 것임을 강조함..
+- PCIe로 host와 연결 가능해서, 기존의 서버에 바로 꽂아서 사용 가능함
+- MLP, CNN, RNN 타겟
+- instruction을 직접 fetch 하는 것이 아닌, host server가 보내면 받아오는 구조여서 심플함
+- 8비트를 곱한 값은 16비트로 저장, 16비트들을 더한 값은 17,18비트 등 점점 길어질 수 있으니 accumulate해서 32비트로 저장
+- Matrix Multiply unit이 systolic array이다. 행렬 계산에서 여러 번 사용되는 특정 값을 재사용 해서, latency 큰 SRAM 접근 안 해도 된다. weight 값을 미리 깔아두고, input을 세로로 뿌리고, output(psum)은 가로로 이동하며 모임.
+- accumulator가 4096개인 이유 : peek performance를 위해 byte당 1350번의 operation이 수행되어야 하므로, 최소 1350개를 저장할 수 있어야해서 반올림해서 2048이 되었고, double buffering (저장된 값이 buffer에 써지는 동안, 다음 데이터가 accumulator에 써지도록)을 위해 2배 해서 4096
 
-P1 : 
+software stack까지

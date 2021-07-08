@@ -86,7 +86,7 @@ P10 : 한 stage가 최대 수천 cycle 차지 가능 -> 예를 들면, matrix mu
 
 ![fig4](https://imgur.com/yQrgJWA.png)
 
-P11 : unifed buffer에 접근해 read/write 하는 것보다 arithmetic operation이 빠르기 때문에, systolic array 형태로 memory access를 최소화하고 data reusage를 늘린다.
+P11 : **unifed buffer에 접근해 read/write 하는 것보다 arithmetic operation이 빠르기 때문에, systolic array 형태로 memory access를 최소화하고 data reusage를 늘린다.**
 
 P12 : TPU Software stack은 User Space Driver와 Kernel Driver로 구성됨. Kernel Driver는 lightweight하며, memory management나 interrupt만 담당함
 
@@ -141,7 +141,7 @@ actual mix of program을 알고 있으면 weighted mean을 계산할 수 있다.
 
 P1 : 컴퓨터를 수천 대씩 사면 성능보다 cost-performance가 중요한데, Total Cost of Ownership (TCO) 가 중요한 지표이다. 따라서 가격 관련 지표는 공개하지 못하기 때문에, TCO당 성능 대신 전력사용량(Watt)당 성능을 이 논문에서는 지표로 사용한다.
 
-[fig9](https://imgur.com/Gm4Jujm.png)
+![fig9](https://imgur.com/Gm4Jujm.png)
 
 P2 : fig 9에서 Total은 TPU/GPU performance/Watt 계산 시 host CPU server가 사용한 전력도 포함하고, incremental은 포함하지 않는다.
 
@@ -152,7 +152,7 @@ P3 : fig9 수치 설명
 P1 : Thermal Design Power (TDP) : 전력 공급 및 쿨링 비용을 포함함.
 전력을 100% 사용하는 시간은 10%밖에 되지 않으며, energy proportionality에 따라 전력 사용량은 수행하는 업무량에 비례해야 함
 
-[fig10,11](https://imgur.com/d1qkTJp.png)
+![fig10,11](https://imgur.com/d1qkTJp.png)
 
 P2 : workload utilization의 변화에 따라 C/G/TPU 성능 및 전력사용량 비교함.
 fig 10 참고
@@ -216,5 +216,5 @@ P9 : domain-specific 아키텍쳐 디자인 할 때 아키텍쳐 역사를 무�
 - 8비트를 곱한 값은 16비트로 저장, 16비트들을 더한 값은 17,18비트 등 점점 길어질 수 있으니 accumulate해서 32비트로 저장
 - Matrix Multiply unit이 systolic array이다. 행렬 계산에서 여러 번 사용되는 특정 값을 재사용 해서, latency 큰 SRAM 접근 안 해도 된다. weight 값을 미리 깔아두고, input을 세로로 뿌리고, output(psum)은 가로로 이동하며 모임.
 - accumulator가 4096개인 이유 : peek performance를 위해 byte당 1350번의 operation이 수행되어야 하므로, 최소 1350개를 저장할 수 있어야해서 반올림해서 2048이 되었고, double buffering (저장된 값이 buffer에 써지는 동안, 다음 데이터가 accumulator에 써지도록)을 위해 2배 해서 4096
-
-software stack까지
+- Roofline Performance Model : memory bandwidth와 computation power 중 어떤 것이 bottleneck인지 따지기 좋음
+- MLP, RNN은 memory bound, CNN은 copmutation bound

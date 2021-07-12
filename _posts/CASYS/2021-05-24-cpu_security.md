@@ -9,9 +9,13 @@ tags: 논문
 
 ![Imgur](https://imgur.com/KxHunsl.png)
 
-기존에는 (a)처럼 overhead 크지만, 미리 PAD 만들면 encrypt/decrypt overhead hide 가능
-authentication overhead(verify MAC)을 hide하기 위해서는 Galois Counter Mode (GCM) 사용. GCM은 counter를 이용하기 때문에 마찬가지로 PAD 미리 만들어두면 authentication overhead 줄일 수 있음. GHASH라는 a short chain of Galois Field Multiplications and XORs, each of which can
-be performed in one cycle 만 계산하면 됨
+기존에는 (a)처럼 overhead 크지만, 미리 PAD 만들면 encrypt/decrypt overhead hide 가능함.
+
+authentication overhead(verify MAC)을 hide하기 위해서는 Galois Counter Mode (GCM) 사용.
+
+GCM은 counter를 이용하기 때문에 마찬가지로 PAD 미리 만들어두면 authentication overhead 줄일 수 있음.
+
+GHASH라는 a short chain of Galois Field Multiplications and XORs, each of which can be performed in one cycle 만 계산하면 됨
 
 ## 5.1 Private Counter Stream
 
@@ -19,7 +23,8 @@ be performed in one cycle 만 계산하면 됨
 
 64bit counter value, 512bit pre-generated encryption pad, 128bit pre-generated authentication pad, 1bit valid bit으로 1+64+512+128 = 705bits
 
-valid bit란 pad가 pre-generated지만 not consumed임을 확인
+valid bit란 pad가 pre-generated지만 not consumed임을 확인하는 용도임.
+
 processor개수가 N이면 (2XNX705/8)bytes per processor
 
 sender
